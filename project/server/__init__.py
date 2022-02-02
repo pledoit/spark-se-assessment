@@ -3,6 +3,7 @@ import sys
 
 if os.environ.get('FLASK_COVERAGE'):
     import coverage
+
     COV = coverage.coverage(
         branch=True,
         include='project/*',
@@ -15,7 +16,7 @@ if os.environ.get('FLASK_COVERAGE'):
     COV.start()
 
 import click
-from flask import Flask
+from flask import Flask, jsonify, json
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -32,18 +33,28 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 
 from project.server.models import User
+
 migrate = Migrate(app, db)
+
 
 @app.route("/")
 def root_site():
     return "<p>It works!</p>"
 
+
+@app.route("/users/index", methods=['GET'])
+def index():
+    return json.dumps([user.as_dict() for user in User.query.all()])
+
+
 from project.server.auth.views import auth_blueprint
+
 app.register_blueprint(auth_blueprint)
+
 
 @app.cli.command()
 @click.option('--coverage/--no-coverage', default=False,
-                help='Run tests under code coverage.')
+              help='Run tests under code coverage.')
 def test(coverage):
     """Run the unit tests."""
     if coverage and not os.environ.get('FLASK_COVERAGE'):
