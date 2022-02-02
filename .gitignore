@@ -17,3 +17,4 @@ diagnostic
 diagnostic_test
 diagnostic_test.db
 .idea/misc.xml
+*.xml
