@@ -15,7 +15,7 @@ class RegisterAPI(MethodView):
     def get(self):
         responseObject = {
             'status': 'success',
-            'message': 'Request successful but please send an HTTP POST request to register the user.'
+            'message': 'Request successful but please send an HTTP POSTED request to register the user.'
         }
         return make_response(jsonify(responseObject)), 201
 
